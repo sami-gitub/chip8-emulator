@@ -1,46 +1,28 @@
-# 🎮 CHIP-8 Emulator - Roadmap
+# CHIP-8 Emulator - Roadmap
 
-## Phase 1 : Setup du projet
-- [ ] Structure des dossiers et CMakeLists.txt
-- [ ] Configuration SDL2
-- [ ] README.md initial
+## Complete
 
-## Phase 2 : Core CPU
-- [ ] Classe Chip8 avec mémoire et registres
-- [ ] Chargement de ROM
-- [ ] Cycle fetch-decode-execute
-- [ ] Implémentation des 35 opcodes
+### Phase 1-5 : Base
+- Structure du projet et CMake
+- CPU avec 35 opcodes
+- Affichage SDL2 64x32
+- Input clavier et timers
+- Tests et documentation initiale
 
-## Phase 3 : Affichage
-- [ ] Classe Display avec SDL2
-- [ ] Rendu du framebuffer 64x32
-- [ ] Scaling et couleurs
-
-## Phase 4 : Input & Timers
-- [ ] Gestion du clavier (16 touches)
-- [ ] Delay timer et sound timer
-- [ ] Boucle principale avec timing
-
-## Phase 5 : Polish
-- [x] Tests avec ROMs classiques
-- [x] Screenshots/GIFs pour README
-- [x] Documentation finale
+### Phase 6 : Interface
+- Menu de selection de ROMs avec font bitmap
+- Pause/Resume (Espace)
+- Reset (F5)
+- Nom de la ROM en titre de fenetre
+- 5 palettes de couleurs (F1/F2)
+- Vitesse ajustable (+/-)
 
 ---
 
-## Phase 6 : Interface
-- [ ] Menu pour charger les ROMs (liste des fichiers dans roms/)
-- [ ] Pause/Resume avec touche Espace
-- [ ] Reset avec touche R
-- [ ] Affichage du nom de la ROM en titre de fenetre
-- [ ] Couleurs personnalisables (F1/F2 pour changer)
+## Idees futures (non implementees)
 
-## Phase 7 : Fonctionnalites avancees
-- [ ] Vitesse ajustable (+/- pour accelerer/ralentir)
-- [ ] Save states (F5 sauvegarder, F8 charger)
-- [ ] Support Super CHIP-8 (SCHIP) - optionnel
-
----
-
-## Notes de progression
-<!-- Ajoute tes notes ici au fur et à mesure -->
+- Save states (sauvegarder/charger l'etat)
+- Support Super CHIP-8 (SCHIP) - resolution 128x64
+- Son (beep du sound timer)
+- Debugger integre
+- Version WebAssembly

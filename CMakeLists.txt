@@ -18,6 +18,7 @@ set(SOURCES
     src/main.cpp
     src/chip8.cpp
     src/display.cpp
+    src/menu.cpp
 )
 
 # Exécutable

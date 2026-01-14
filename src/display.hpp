@@ -28,6 +28,7 @@ public:
   InputEvent processEvents(uint8_t *keypad);
   void setTitle(const std::string &title);
   void setColors(uint32_t fg, uint32_t bg);
+  SDL_Renderer *getRenderer() { return renderer; }
 
 private:
   SDL_Window *window = nullptr;

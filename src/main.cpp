@@ -1,9 +1,12 @@
 #include "chip8.hpp"
 #include "display.hpp"
+#include "menu.hpp"
 #include <chrono>
 #include <filesystem>
 #include <iostream>
 #include <thread>
+
+namespace fs = std::filesystem;
 
 // Palettes de couleurs (FG, BG)
 const uint32_t COLOR_SCHEMES[][2] = {
@@ -15,28 +18,50 @@ const uint32_t COLOR_SCHEMES[][2] = {
 };
 const int NUM_SCHEMES = 5;
 
+bool runEmulator(const std::string &romPath, Display &display, Chip8 &chip8);
+
 int main(int argc, char *argv[]) {
-  if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " <rom_file>" << std::endl;
-    return 1;
-  }
-
-  std::string romPath = argv[1];
-  std::string romName = std::filesystem::path(romPath).stem().string();
-
-  Chip8 chip8;
   Display display;
+  Chip8 chip8;
 
   if (!display.init(10)) {
     std::cerr << "Erreur d'initialisation de l'affichage" << std::endl;
     return 1;
   }
 
+  std::string romPath;
+
+  // Si ROM en argument, la charger directement
+  if (argc >= 2) {
+    romPath = argv[1];
+  } else {
+    // Sinon, afficher le menu
+    Menu menu;
+
+    // Chercher le dossier roms
+    std::string romsDir = "roms";
+    if (!fs::exists(romsDir)) {
+      romsDir = "../roms";
+    }
+
+    menu.scanRoms(romsDir);
+
+    menu.init(display.getRenderer());
+    int selection = menu.run(display.getRenderer());
+
+    if (selection < 0) {
+      return 0; // Utilisateur a quitte
+    }
+
+    romPath = menu.getSelectedRom();
+  }
+
   if (!chip8.loadROM(romPath)) {
-    std::cerr << "Erreur de chargement de la ROM" << std::endl;
+    std::cerr << "Erreur de chargement de la ROM: " << romPath << std::endl;
     return 1;
   }
 
+  std::string romName = fs::path(romPath).stem().string();
   display.setTitle("CHIP-8 - " + romName);
 
   // Timing

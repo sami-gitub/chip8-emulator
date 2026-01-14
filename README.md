@@ -1,59 +1,59 @@
-# 🎮 CHIP-8 Emulator
+# 🎮 Émulateur CHIP-8
 
-A CHIP-8 emulator written in modern C++17 with SDL2.
+Un émulateur CHIP-8 écrit en C++17 moderne avec SDL2.
 
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
 ![SDL2](https://img.shields.io/badge/SDL-2.0-green.svg)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)
 
-## 🚀 Features
+## 🚀 Fonctionnalités
 
-- [ ] Full CHIP-8 instruction set (35 opcodes)
-- [ ] 64x32 pixel display with scaling
-- [ ] Keyboard input mapping
-- [ ] Accurate timing (60 Hz timers)
-- [ ] Sound support
+- [ ] Jeu d'instructions CHIP-8 complet (35 opcodes)
+- [ ] Affichage 64x32 pixels avec mise à l'échelle
+- [ ] Mapping clavier
+- [ ] Timing précis (timers 60 Hz)
+- [ ] Support du son
 
-## 📋 Requirements
+## 📋 Prérequis
 
 - CMake 3.16+
 - SDL2
-- C++17 compatible compiler
+- Compilateur compatible C++17
 
-## 🔧 Build
+## 🔧 Compilation
 
 ```bash
-# Install SDL2 (Ubuntu/Debian)
+# Installer SDL2 (Ubuntu/Debian)
 sudo apt install libsdl2-dev
 
-# Build
+# Compiler
 mkdir build && cd build
 cmake ..
 make
 
-# Run
-./chip8 ../roms/your_rom.ch8
+# Lancer
+./chip8 ../roms/votre_rom.ch8
 ```
 
-## 🎮 Controls
+## 🎮 Contrôles
 
 ```
-CHIP-8:          Keyboard:
+CHIP-8:          Clavier:
 1 2 3 C          1 2 3 4
 4 5 6 D    →     Q W E R
 7 8 9 E          A S D F
 A 0 B F          Z X C V
 ```
 
-## 📸 Screenshots
+## 📸 Captures d'écran
 
-*Coming soon...*
+*À venir...*
 
-## 📚 Resources
+## 📚 Ressources
 
-- [Cowgod's CHIP-8 Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM)
-- [CHIP-8 Test Suite](https://github.com/Timendus/chip8-test-suite)
+- [Référence CHIP-8 de Cowgod](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM)
+- [Suite de tests CHIP-8](https://github.com/Timendus/chip8-test-suite)
 
-## 📄 License
+## 📄 Licence
 
-MIT License
+Licence MIT

@@ -1,14 +1,28 @@
 #include "chip8.hpp"
 #include "display.hpp"
 #include <chrono>
+#include <filesystem>
 #include <iostream>
 #include <thread>
+
+// Palettes de couleurs (FG, BG)
+const uint32_t COLOR_SCHEMES[][2] = {
+    {0xFFFFFFFF, 0x000000FF}, // Blanc sur noir
+    {0x00FF00FF, 0x000000FF}, // Vert sur noir (retro)
+    {0xFFAA00FF, 0x442200FF}, // Ambre
+    {0x00FFFFFF, 0x000066FF}, // Cyan sur bleu
+    {0xFF6600FF, 0x000000FF}, // Orange
+};
+const int NUM_SCHEMES = 5;
 
 int main(int argc, char *argv[]) {
   if (argc < 2) {
     std::cerr << "Usage: " << argv[0] << " <rom_file>" << std::endl;
     return 1;
   }
+
+  std::string romPath = argv[1];
+  std::string romName = std::filesystem::path(romPath).stem().string();
 
   Chip8 chip8;
   Display display;
@@ -18,48 +32,88 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  if (!chip8.loadROM(argv[1])) {
+  if (!chip8.loadROM(romPath)) {
     std::cerr << "Erreur de chargement de la ROM" << std::endl;
     return 1;
   }
 
-  // Timing: ~500 Hz pour les instructions, 60 Hz pour les timers
-  const int INSTRUCTIONS_PER_SECOND = 500;
-  const auto cycleDelay =
-      std::chrono::microseconds(1000000 / INSTRUCTIONS_PER_SECOND);
+  display.setTitle("CHIP-8 - " + romName);
 
+  // Timing
+  int instructionsPerSecond = 500;
   int cycleCount = 0;
   bool running = true;
+  bool paused = false;
+  int colorScheme = 0;
 
   uint8_t keypad[16] = {0};
 
   while (running) {
+    auto cycleDelay =
+        std::chrono::microseconds(1000000 / instructionsPerSecond);
     auto start = std::chrono::high_resolution_clock::now();
 
-    // Gerer les evenements (clavier, fermeture)
-    running = display.processEvents(keypad);
+    InputEvent event = display.processEvents(keypad);
 
-    // Mettre a jour l'etat des touches
-    for (int i = 0; i < 16; ++i) {
-      chip8.setKey(i, keypad[i] != 0);
+    switch (event) {
+    case InputEvent::Quit:
+      running = false;
+      break;
+    case InputEvent::Pause:
+      paused = !paused;
+      if (paused) {
+        display.setTitle("CHIP-8 - " + romName + " [PAUSE]");
+      } else {
+        display.setTitle("CHIP-8 - " + romName);
+      }
+      break;
+    case InputEvent::Reset:
+      chip8.initialize();
+      chip8.loadROM(romPath);
+      std::fill(keypad, keypad + 16, 0);
+      break;
+    case InputEvent::ColorNext:
+      colorScheme = (colorScheme + 1) % NUM_SCHEMES;
+      display.setColors(COLOR_SCHEMES[colorScheme][0],
+                        COLOR_SCHEMES[colorScheme][1]);
+      chip8.drawFlag = true;
+      break;
+    case InputEvent::ColorPrev:
+      colorScheme = (colorScheme - 1 + NUM_SCHEMES) % NUM_SCHEMES;
+      display.setColors(COLOR_SCHEMES[colorScheme][0],
+                        COLOR_SCHEMES[colorScheme][1]);
+      chip8.drawFlag = true;
+      break;
+    case InputEvent::SpeedUp:
+      instructionsPerSecond = std::min(2000, instructionsPerSecond + 100);
+      std::cout << "Vitesse: " << instructionsPerSecond << " Hz" << std::endl;
+      break;
+    case InputEvent::SpeedDown:
+      instructionsPerSecond = std::max(100, instructionsPerSecond - 100);
+      std::cout << "Vitesse: " << instructionsPerSecond << " Hz" << std::endl;
+      break;
+    default:
+      break;
     }
 
-    // Exécuter un cycle CPU
-    chip8.cycle();
+    if (!paused) {
+      for (int i = 0; i < 16; ++i) {
+        chip8.setKey(i, keypad[i] != 0);
+      }
 
-    // Mettre à jour les timers (60 Hz)
-    if (++cycleCount >= INSTRUCTIONS_PER_SECOND / 60) {
-      chip8.updateTimers();
-      cycleCount = 0;
+      chip8.cycle();
+
+      if (++cycleCount >= instructionsPerSecond / 60) {
+        chip8.updateTimers();
+        cycleCount = 0;
+      }
     }
 
-    // Rafraîchir l'affichage si nécessaire
     if (chip8.drawFlag) {
       display.render(chip8.display.data());
       chip8.drawFlag = false;
     }
 
-    // Attendre pour maintenir le timing
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed =
         std::chrono::duration_cast<std::chrono::microseconds>(end - start);

@@ -39,12 +39,22 @@ bool Display::init(int scale) {
   return true;
 }
 
+void Display::setTitle(const std::string &title) {
+  if (window) {
+    SDL_SetWindowTitle(window, title.c_str());
+  }
+}
+
+void Display::setColors(uint32_t fg, uint32_t bg) {
+  fgColor = fg;
+  bgColor = bg;
+}
+
 void Display::render(const uint8_t *framebuffer) {
   uint32_t pixels[WIDTH * HEIGHT];
 
   for (int i = 0; i < WIDTH * HEIGHT; ++i) {
-    // Blanc si pixel allumé, noir sinon
-    pixels[i] = framebuffer[i] ? 0xFFFFFFFF : 0x000000FF;
+    pixels[i] = framebuffer[i] ? fgColor : bgColor;
   }
 
   SDL_UpdateTexture(texture, nullptr, pixels, WIDTH * sizeof(uint32_t));
@@ -70,11 +80,6 @@ void Display::cleanup() {
 }
 
 int Display::getChip8Key(SDL_Keycode key) {
-  // Mapping clavier:
-  // 1 2 3 4  ->  1 2 3 C
-  // Q W E R  ->  4 5 6 D
-  // A S D F  ->  7 8 9 E
-  // Z X C V  ->  A 0 B F
   switch (key) {
   case SDLK_1:
     return 0x1;
@@ -113,19 +118,35 @@ int Display::getChip8Key(SDL_Keycode key) {
   }
 }
 
-bool Display::processEvents(uint8_t *keypad) {
+InputEvent Display::processEvents(uint8_t *keypad) {
   SDL_Event event;
 
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
     case SDL_QUIT:
-      return false;
+      return InputEvent::Quit;
 
     case SDL_KEYDOWN: {
-      if (event.key.keysym.sym == SDLK_ESCAPE) {
-        return false;
-      }
-      int key = getChip8Key(event.key.keysym.sym);
+      SDL_Keycode sym = event.key.keysym.sym;
+
+      // Touches speciales
+      if (sym == SDLK_ESCAPE)
+        return InputEvent::Quit;
+      if (sym == SDLK_SPACE)
+        return InputEvent::Pause;
+      if (sym == SDLK_F5)
+        return InputEvent::Reset;
+      if (sym == SDLK_F1)
+        return InputEvent::ColorPrev;
+      if (sym == SDLK_F2)
+        return InputEvent::ColorNext;
+      if (sym == SDLK_EQUALS || sym == SDLK_PLUS || sym == SDLK_KP_PLUS)
+        return InputEvent::SpeedUp;
+      if (sym == SDLK_MINUS || sym == SDLK_KP_MINUS || sym == SDLK_6)
+        return InputEvent::SpeedDown;
+
+      // Touches CHIP-8
+      int key = getChip8Key(sym);
       if (key >= 0) {
         keypad[key] = 1;
       }
@@ -142,5 +163,5 @@ bool Display::processEvents(uint8_t *keypad) {
     }
   }
 
-  return true;
+  return InputEvent::None;
 }

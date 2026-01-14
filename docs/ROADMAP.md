@@ -24,7 +24,21 @@
 ## Phase 5 : Polish
 - [x] Tests avec ROMs classiques
 - [x] Screenshots/GIFs pour README
-- [ ] Documentation finale
+- [x] Documentation finale
+
+---
+
+## Phase 6 : Interface
+- [ ] Menu pour charger les ROMs (liste des fichiers dans roms/)
+- [ ] Pause/Resume avec touche Espace
+- [ ] Reset avec touche R
+- [ ] Affichage du nom de la ROM en titre de fenetre
+- [ ] Couleurs personnalisables (F1/F2 pour changer)
+
+## Phase 7 : Fonctionnalites avancees
+- [ ] Vitesse ajustable (+/- pour accelerer/ralentir)
+- [ ] Save states (F5 sauvegarder, F8 charger)
+- [ ] Support Super CHIP-8 (SCHIP) - optionnel
 
 ---
 

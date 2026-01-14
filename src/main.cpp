@@ -31,15 +31,15 @@ int main(int argc, char *argv[]) {
   int cycleCount = 0;
   bool running = true;
 
+  uint8_t keypad[16] = {0};
+
   while (running) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    // Gérer les événements (clavier, fermeture)
-    // Accès direct au keypad via un tableau temporaire
-    uint8_t keypad[16] = {0};
+    // Gerer les evenements (clavier, fermeture)
     running = display.processEvents(keypad);
 
-    // Mettre à jour l'état des touches
+    // Mettre a jour l'etat des touches
     for (int i = 0; i < 16; ++i) {
       chip8.setKey(i, keypad[i] != 0);
     }

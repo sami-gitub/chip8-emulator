@@ -22,8 +22,8 @@
 - [ ] Boucle principale avec timing
 
 ## Phase 5 : Polish
-- [ ] Tests avec ROMs classiques
-- [ ] Screenshots/GIFs pour README
+- [x] Tests avec ROMs classiques
+- [x] Screenshots/GIFs pour README
 - [ ] Documentation finale
 
 ---

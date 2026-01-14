@@ -45,9 +45,9 @@ CHIP-8:          Clavier:
 A 0 B F          Z X C V
 ```
 
-## 📸 Captures d'écran
+## Capture d'ecran
 
-*À venir...*
+![CHIP-8 Test Suite](docs/premiertest.png)
 
 ## 📚 Ressources
 
